@@ -1,0 +1,24 @@
+[Unit]
+Description=Lightweight Kubernetes
+Documentation=https://k3s.io
+After=network-online.target
+
+[Service]
+# Change to Type=exec for agent
+Type=notify
+EnvironmentFile=/etc/default/k3s
+# ExecStartPre=-/sbin/modprobe br_netfilter
+# ExecStartPre=-/sbin/modprobe overlay
+ExecStart=@BINDIR@/k3s $K3S_ARGS
+
+KillMode=process
+Delegate=yes
+LimitNOFILE=infinity
+LimitNPROC=infinity
+LimitCORE=infinity
+TasksMax=infinity
+TimeoutStartSec=0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
