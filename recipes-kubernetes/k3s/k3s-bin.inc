@@ -1,35 +1,30 @@
-SUMMARY = "K3s Lightweight Kubernetes (binary version)"
+SUMMARY = "k3s Lightweight Kubernetes (binary package)"
 DESCRIPTION = "\
-    K3s Lightweight Kubernetes (binary version) \
-     \
+    k3s is a fully compliant production-grade Kubernetes \
+    distribution built for the Edge. \
     "
-HOMEPAGE = "https://github.com/rancher/k3s"
+HOMEPAGE = "https://k3s.io"
 MAINTAINER = "Jan Brdr <jan@rancher.com>"
 LICENSE = "Apache-2.0"
-
-LIC_FILES_CHKSUM = "file://LICENSE;md5=2ee41112a44fe7014dce33e26468ba93"
-
-SRC_URI_append = " \
-    https://github.com/rancher/k3s/LICENSE;unpack=0;name=license"
-
-SRC_URI[license.md5sum] = "2ee41112a44fe7014dce33e26468ba93"
-SRC_URI[license.sha256sum] = "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+LIC_FILES_CHKSUM = "file://${COREBASE}/meta/files/common-licenses/Apache-2.0;md5=89aea4e17d99a7cacdbeed46a0096b10"
 
 INC_PR = "r0"
 
 S = "${WORKDIR}"
 
-INHIBIT_PACKAGE_STRIP = "1"
-INHIBIT_PACKAGE_DEBUG_SPLIT  = "1"
-INSANE_SKIP_${PN} = "${ERROR_QA} ${WARN_QA}"
-INSANE_SKIP_${PN} += "ldflags already-stripped"
-ALLOW_EMPTY_${PN} = "1"
+inherit distro_features_check
 
-RDEPENDS_${PN} = "util-linux ethtool iproute2 iproute2-tc ebtables iptables socat "
+# TODO: slirp4netns, bridge-utils ?
+RDEPENDS_${PN} = "util-linux findutils pigz iproute2 ethtool iptables socat ca-certificates \
+                  ${@bb.utils.contains('DISTRO_FEATURES', 'systemd', '', 'cgroup-lite', d)} \
+                  "
 RCONFLICTS_${PN} += "containerd cni runc kubernetes"
 RPROVIDES_${PN} = "kubectl crictl"
 
-do_unpack[noexec] = "1"
+INHIBIT_PACKAGE_STRIP = "1"
+INHIBIT_PACKAGE_DEBUG_SPLIT  = "1"
+INSANE_SKIP_${PN} += "ldflags already-stripped"
+
 do_patch[noexec] = "1"
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"

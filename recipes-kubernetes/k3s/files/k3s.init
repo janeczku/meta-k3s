@@ -4,24 +4,26 @@
 # Provides:          k3s
 # Required-Start:    $local_fs $remote_fs $network
 # Required-Stop:     $local_fs $remote_fs $network
+# Should-Start:      $time $named cgroup-lite
+# Should-Stop:       $time $named cgroup-lite
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Lightweight Kubernetes
+# Short-Description: k3s Lightweight Kubernetes
 ### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON=@BINDIR@/k3s
 DAEMON_OPTS=
 NAME=k3s
-DESC=k3s
+DESC="Lightweight Kubernetes"
 PID="/var/run/k3s.pid"
 
 test -x $DAEMON || exit 0
 
-# These values may be replaced by those from /etc/default/k3s
+# May be overwritten by the environment file
 K3S_ARGS="server --disable-agent"
 
-# Include k3s environment file if available
+# Source environment file
 if [ -f /etc/default/k3s ] ; then
         . /etc/default/k3s
 fi
@@ -32,23 +34,21 @@ case "$1" in
   start)
         echo -n "Starting $DESC: "
         rm -f /tmp/k3s.*
-        start-stop-daemon --start --quiet --pidfile "${PID}" --make-pidfile \
+        start-stop-daemon --start --background --quiet --pidfile "${PID}" --make-pidfile \
                 --name $NAME --exec $DAEMON -- $K3S_ARGS
         echo "$NAME."
         ;;
   stop)
         echo -n "Stopping $DESC: "
-        start-stop-daemon --stop --quiet --pidfile "${PID}" --retry=TERM/30/KILL/5 \
-                --name $NAME
+        start-stop-daemon --stop --quiet --pidfile "${PID}" --retry=TERM/30/KILL/5
         echo "$NAME."
         ;;
   restart|force-reload)
         echo -n "Restarting $DESC: "
-        start-stop-daemon --stop --quiet --pidfile "${PID}" --retry=TERM/30/KILL/5 \
-                --name $NAME
+        start-stop-daemon --stop --quiet --pidfile "${PID}" --retry=TERM/30/KILL/5
         sleep 1
         rm -f /tmp/k3s.*
-        start-stop-daemon --start --quiet --pidfile "${PID}" --make-pidfile \
+        start-stop-daemon --start --background --quiet --pidfile "${PID}" --make-pidfile \
                 --name $NAME --exec $DAEMON -- $K3S_ARGS
         echo "$NAME."
         ;;

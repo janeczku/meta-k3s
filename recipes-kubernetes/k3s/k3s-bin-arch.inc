@@ -1,4 +1,4 @@
-# Determine pre-compiled package based on target architecture
+# Select pre-compiled package based on target architecture
 def k3s_pkg_arch_map(d):
     arch = d.getVar('TARGET_ARCH', True)
     tune = d.getVar('TUNE_FEATURES', True)

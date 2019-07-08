@@ -1,14 +1,13 @@
 [Unit]
-Description=Lightweight Kubernetes
-Documentation=https://k3s.io
+Description=k3s Lightweight Kubernetes
+Documentation=https://rancher.com/docs/k3s/latest/en/
+Wants=network-online.target
 After=network-online.target
 
 [Service]
-# Change to Type=exec for agent
+# Agent mode requires Type=exec
 Type=notify
 EnvironmentFile=/etc/default/k3s
-# ExecStartPre=-/sbin/modprobe br_netfilter
-# ExecStartPre=-/sbin/modprobe overlay
 ExecStart=@BINDIR@/k3s $K3S_ARGS
 
 KillMode=process

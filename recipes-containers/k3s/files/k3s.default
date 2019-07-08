@@ -1,7 +1,0 @@
-# TODO: Allow configuration of these values at build time via sed @PLACEHOLDER@
-# K3S_URL=https://master.local:6443
-K3S_URL=
-K3S_TOKEN=
-K3S_CLUSTER_SECRET=changeme
-K3S_ARGS="server --disable-agent"
-# K3S_ARGS="agent"

@@ -1,0 +1,4 @@
+K3S_URL=
+K3S_TOKEN=
+K3S_CLUSTER_SECRET=changeme
+K3S_ARGS="server --disable-agent"
